@@ -1,0 +1,54 @@
+body {
+    background-color: rgba(219, 244, 182, 0.956);
+    
+}
+
+h1 {
+    
+    color: rgb(66, 59, 59);
+}
+
+.form-card {
+    width: 100%;
+    max-width: 400px;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+.flash-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50px;
+    z-index: 1055;
+    transform: translateX(50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+
+}
+
+.flash-msg{
+    min-width: 300%;
+    max-width: 90px;
+    padding: 0.75rem,1.25rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    animation: fade-in 0.4s forwards;
+}
+
+@keyframes fadeout{
+   0%{
+    opacity: 1;
+   }
+   90%{
+    opacity: 1;
+   }
+   100%{
+    opacity: 0;
+    display: none;
+   }
+}
