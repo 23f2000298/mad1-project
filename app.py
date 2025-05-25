@@ -1,7 +1,10 @@
-from flask import Flask,request,render_template,redirect,url_for,flash
+from flask import Flask,request,redirect,url_for,render_template,flash
 from models import *
+from functools import wraps
 from config import Config
 from flask_login import LoginManager,login_user,login_required,logout_user,current_user
+from werkzeug.utils import secure_filename,os
+
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -23,7 +26,7 @@ def create_admin():
     existing_admin = User.query.filter_by(admin = True).first()    
     if existing_admin:
         return
-    new_admin = User(name='admin',email='admin@123',password=bcript.generate_password_hash('1').decode('utf-8'))
+    new_admin = User(name='admin',email='admin@123',password="1")
     new_admin.admin = True
     db.session.add(new_admin)
     db.session.commit()
