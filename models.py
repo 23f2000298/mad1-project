@@ -18,33 +18,35 @@ class User(db.Model, UserMixin):
         self.name = name
         self.email = email
         self.password = Bcrypt().generate_password_hash(password).decode('utf-8')
-    
-class Parking_Lot(db.Model):
+
+
+class ParkingLot(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     location = db.Column(db.String(120), unique=True, nullable=False)
     capacity = db.Column(db.Integer, nullable=False)
     occupied = db.Column(db.Integer, nullable=False)
-    available = db.Column(db.Integer,default = True, nullable=False)
+    available = db.Column(db.Integer, nullable=False)  # or use Boolean if it's a flag
     price = db.Column(db.Integer, nullable=False)
 
-    Parking_Spot = db.relationship('Parking_Spot', backref='Parking_Lot',cascade='all, delete-orphan')
+    parking_spots = db.relationship('ParkingSpot', backref='parking_lot', cascade='all, delete-orphan')
+    parked_histories = db.relationship('ParkedHistory', backref='parking_lot', cascade='all, delete-orphan')
 
-class Parking_Spot(db.Model):
+
+class ParkingSpot(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     location = db.Column(db.String(120), nullable=False)
     status = db.Column(db.String(120), nullable=False)
-    Parking_Lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.id',ondelete='CASCADE'), nullable=False)
-    
+    parking_lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.id', ondelete='CASCADE'), nullable=False) 
+    #ondelete='CASCADE' = if we delete parents then child will be deleted
 
-class Parked_History(db.Model):
+    parked_histories = db.relationship('ParkedHistory', backref='parking_spot', cascade='all, delete-orphan')
+
+
+class ParkedHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(120), nullable=False)
-    date = db.Column(db.DateTime, nullable=False,default=datetime.now())
+    date = db.Column(db.DateTime, nullable=False, default=datetime.now)
     email = db.Column(db.String(120), nullable=False)
-    Parking_Spot_id = db.Column(db.Integer, db.ForeignKey('parking_spot.id',ondelete='CASCADE'), nullable=False)
-    Parking_Lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.id',ondelete='CASCADE'), nullable=False)
+    parking_spot_id = db.Column(db.Integer, db.ForeignKey('parking_spot.id', ondelete='CASCADE'), nullable=False)
+    parking_lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.id', ondelete='CASCADE'), nullable=False)
     status = db.Column(db.String(120), nullable=False)
-
-    user = db.relationship('User', backref='Parked_History')
-    Parking_Spot = db.relationship('Parking_Spot', backref='Parked_History')
-    Parking_Lot = db.relationship('Parking_Lot', backref='Parked_History')
