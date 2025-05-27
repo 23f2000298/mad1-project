@@ -96,15 +96,18 @@ def logout():
 
 ############# crud 0n parking lot ################
 
-@app.route('/Parking_Lot/create',methods=['GET','POST'])    
+@app.route('/parking_lots/create',methods=['GET','POST'])    
 @login_required
 @admin_required
 def create_parking_lot():
     if request.method == 'POST':
-        location = request.form['location']
-        capacity = request.form['capacity']
-        price = request.form['price']
-        new_parking_lot = ParkingLot(location=location,capacity=capacity,price=price)
+        # location = request.form['location']
+        # capacity = request.form['capacity']
+        # price = request.form['price']
+        # new_parking_lot = ParkingLot(location=location,capacity=capacity,price=price)
+        name = request.form['name']
+        address = request.form['address']
+        new_parking_lot = ParkingLot(name=name,address=address)
         db.session.add(new_parking_lot)
         db.session.commit()
         flash("Parking lot created successfully","success")

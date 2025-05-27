@@ -50,3 +50,4 @@ class ParkedHistory(db.Model):
     parking_spot_id = db.Column(db.Integer, db.ForeignKey('parking_spot.id', ondelete='CASCADE'), nullable=False)
     parking_lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.id', ondelete='CASCADE'), nullable=False)
     status = db.Column(db.String(120), nullable=False)
+
