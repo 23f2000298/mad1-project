@@ -22,14 +22,15 @@ class User(db.Model, UserMixin):
 
 class ParkingLot(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    location = db.Column(db.String(120), unique=True, nullable=False)
-    capacity = db.Column(db.Integer, nullable=False)
-    occupied = db.Column(db.Integer, nullable=False)
-    available = db.Column(db.Integer, nullable=False)  # or use Boolean if it's a flag
-    price = db.Column(db.Integer, nullable=False)
+    name = db.Column(db.String(120), nullable=False)
+    address = db.Column(db.String(255), nullable=False)
+    pin_code = db.Column(db.String(10), nullable=True)
+    price_per_hour = db.Column(db.Integer, nullable=True)
+    maximum_spots = db.Column(db.Integer, nullable=True)
 
     parking_spots = db.relationship('ParkingSpot', backref='parking_lot', cascade='all, delete-orphan')
     parked_histories = db.relationship('ParkedHistory', backref='parking_lot', cascade='all, delete-orphan')
+
 
 
 class ParkingSpot(db.Model):
@@ -50,4 +51,3 @@ class ParkedHistory(db.Model):
     parking_spot_id = db.Column(db.Integer, db.ForeignKey('parking_spot.id', ondelete='CASCADE'), nullable=False)
     parking_lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.id', ondelete='CASCADE'), nullable=False)
     status = db.Column(db.String(120), nullable=False)
-

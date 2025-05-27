@@ -13,6 +13,9 @@
                     <tr>
                         <th scope="col">Parking Lot Name</th>
                         <th scope="col">Address</th>
+                        <th scope="col">Pin Code</th>
+                        <th scope="col">Price Per Hour</th>
+                        <th scope="col">Maximum Spots</th>
                         {% if current_user.admin %}
                         <th scope="col" style="width: 160px">Action</th>
                         {% endif %}
@@ -23,6 +26,9 @@
                     <tr>
                         <td>{{parking_lot.name}}</td>
                         <td>{{parking_lot.address}}</td>
+                        <td>{{parking_lot.pin_code}}</td>
+                        <td>{{parking_lot.price_per_hour}}</td>
+                        <td>{{parking_lot.maximum_spots}}</td>
 
                         {% if current_user.admin %}
                         <td>

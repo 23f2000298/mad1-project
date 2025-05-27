@@ -12,6 +12,18 @@
                     <label for = "address" class = "form-label">Address</label>
                     <textarea type = "text" value = "{{parking_lot.address}}" class = "form-control" id = "address" name = "address" placeholder = "Enter your address" required></textarea>
                 </div>
+                <div class = "mb-3">
+                    <label for = "pin_code" class = "form-label">Pin code</label>
+                    <input type = "number" value = "{{parking_lot.pin_code}}" class = "form-control" id = "pin_code" name = "pin_code" placeholder = "Enter your Pin code" required>
+                </div>
+                <div class = "mb-3">
+                    <label for = "price_per_hour" class = "form-label">Price(Per Hour)</label>
+                    <input type = "number" value = "{{parking_lot.price_per_hour}}" class = "form-control" id = "price_per_hour" name = "price_per_hour" placeholder = "Enter Price Per Hour" min = "0" required>
+                </div>
+                <div class = "mb-3">
+                    <label for = "maximum_spots" class = "form-label">Maximum_Spots</label>
+                    <input type = "number" value = "{{parking_lot.maximum_spots}}" class = "form-control" id = "maximum_spots" name = "maximum_spots" placeholder="Enter Maximum Spots" min = "0" required>
+                </div>
                 <div class = "d-grid"><button type = "submit" class = "btn btn-dark">Update</button></div>
                 
             </form> 

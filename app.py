@@ -35,6 +35,7 @@ def create_admin():
 with app.app_context():
     db.create_all()
     create_admin()
+   
 
 def admin_required(f):
     @wraps(f)
@@ -101,13 +102,13 @@ def logout():
 @admin_required
 def create_parking_lot():
     if request.method == 'POST':
-        # location = request.form['location']
-        # capacity = request.form['capacity']
-        # price = request.form['price']
-        # new_parking_lot = ParkingLot(location=location,capacity=capacity,price=price)
+      
         name = request.form['name']
         address = request.form['address']
-        new_parking_lot = ParkingLot(name=name,address=address)
+        pin_code = request.form['pin_code']
+        price_per_hour = request.form['price_per_hour']
+        maximum_spots = request.form['maximum_spots']
+        new_parking_lot = ParkingLot(name=name,address=address,pin_code=pin_code,price_per_hour=price_per_hour,maximum_spots=maximum_spots)
         db.session.add(new_parking_lot)
         db.session.commit()
         flash("Parking lot created successfully","success")
@@ -128,6 +129,9 @@ def edit_parking_lot(parking_lot_id):
     if request.method == 'PUT':
         parking_lot.name = request.form['name']
         parking_lot.address = request.form['address']
+        parking_lot.pin_code = request.form['pin_code']
+        parking_lot.price_per_hour = request.form['price_per_hour']
+        parking_lot.maximum_spots = request.form['maximum_spots']
         db.session.commit()
         flash("Parking lot updated successfully","success")
         return redirect(url_for('list_parking_lots'))
