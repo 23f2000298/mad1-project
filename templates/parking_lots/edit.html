@@ -3,14 +3,14 @@
     <div class = "d-flex justify-content-center align-items-center" style="min-height:70vh">
         <div class = "form-card">
             <h4 class = "mb-3 text-center">Update Parking Lot {{parking_lot.name}}</h4>
-            <form method = "PUT">
+            <form method = "POST">
                 <div class = "mb-3">
                     <label for = "name" class = "form-label">Name</label>
                     <input type = "text" value = "{{parking_lot.name}}" class = "form-control" id = "name" name = "name" placeholder = "Enter your name" required>
                 </div>
                 <div class = "mb-3">
                     <label for = "address" class = "form-label">Address</label>
-                    <textarea type = "text" value = "{{parking_lot.address}}" class = "form-control" id = "address" name = "address" placeholder = "Enter your address" required></textarea>
+                    <textarea type = "text" class = "form-control" id = "address" name = "address" placeholder = "Enter your address" required>{{parking_lot.address}}</textarea>
                 </div>
                 <div class = "mb-3">
                     <label for = "pin_code" class = "form-label">Pin code</label>

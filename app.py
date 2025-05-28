@@ -118,15 +118,19 @@ def create_parking_lot():
 @app.route('/parking_lots')
 @login_required
 def list_parking_lots():
-    parking_lots = ParkingLot.query.all()
+    query = request.args.get('search',"")
+    if query:
+        parking_lots = ParkingLot.query.filter(ParkingLot.name.ilike(f"%{query}%")).all()
+    else:
+        parking_lots = ParkingLot.query.all()
     return render_template('parking_lots/list.html',parking_lots=parking_lots)
 
-@app.route('/parking_lots/<int:parking_lot_id>/edit',methods=['GET','PUT'])
+@app.route('/parking_lots/<int:parking_lot_id>/edit',methods=['GET','POST'])
 @login_required
 @admin_required
 def edit_parking_lot(parking_lot_id):
     parking_lot = ParkingLot.query.get_or_404(parking_lot_id)
-    if request.method == 'PUT':
+    if request.method == 'POST':
         parking_lot.name = request.form['name']
         parking_lot.address = request.form['address']
         parking_lot.pin_code = request.form['pin_code']
@@ -147,6 +151,68 @@ def delete_parking_lot(parking_lot_id):
     flash("Parking lot deleted successfully","success")
     return redirect(url_for('list_parking_lots'))
       
+#######################crud on parking spots#####################
+@app.route("/parking_spots/create",methods=['GET','POST'])
+@login_required
+@admin_required
+def create_parking_spot():
+    parking_lots = ParkingLot.query.all()
+    if request.method == 'POST':
+        #display from data
+        name = request.form['name']
+        parking_lot_id = request.form['parking_lot_id']
+        vehical_no = request.form["vehical_no"]
+        parking_spot_no = request.form["parking_spot_no"]
+        estimate_parking_cost = request.form["estimate_parking_cost"]
+        date = request.form["date"]
+       
+        pdf_file = request.files.get("pdf_file")
+        pdf_path = None
+
+        if pdf_file and pdf_file.filename != "":
+            filename = secure_filename(name)
+            pdf_path = filename
+            os.makedirs(os.path.join(app.config["UPLOAD_FOLDER"]),exist_ok = True)
+            pdf_file.save(os.path.join(app.config["UPLOAD_FOLDER"],filename))
+
+        parking_spot = ParkingSpot(name = name,vehical_no = vehical_no,
+                                   date = date,estimate_parking_cost = estimate_parking_cost,
+                                   parking_lot_id = parking_lot_id,
+                                   parking_spot_no = parking_spot_no,)
+        db.session.add(parking_spot)
+        db.session.commit()
+        flash("Parking spot created successfully","success")
+        return redirect(url_for('list_parking_spots',parking_lots = parking_lots))    
+    
+    return render_template('parking_spots/create.html')
+
+@app.route('/parking_spots/<int:parking_spot_id>/edit',methods=['GET','POST'])
+@login_required
+@admin_required
+def edit_parking_lot(parking_spot_id):
+    parking_spot = ParkingLot.query.get_or_404(parking_spot_id)
+    parking_lots = ParkingLot.query.all()
+    if request.method == 'POST':
+        parking_spot.name = request.form['name']
+        parking_spot.vehical_no = request.form['vehical_no']
+        parking_spot.parking_lot_id = request.form['parking_lot_id']
+        parking_spot.parking_spot_no = request.form['parking_spot_no']
+        parking_spot.estimate_parking_cost = request.form['estimate_parking_cost']
+        parking_spot.date = request.form['date']
+        db.session.commit()
+        flash("Parking spot updated successfully","success")
+        return redirect(url_for('list_parking_spots'))
+    return render_template('parking_spots/edit.html',parking_spot=parking_spot,parking_lots=parking_lots)   
+
+@app.route('/parking_spots/<int:parking_spot_id>/delete',methods=['POST'])
+@login_required
+@admin_required
+def delete_parking_lot(parking_spot_id):    
+    parking_spot = ParkingSpot.query.get_or_404(parking_spot_id)
+    db.session.delete(parking_spot)
+    db.session.commit()
+    flash("Parking spot deleted successfully","success")
+    return redirect(url_for('list_parking_spots'))
 
 if __name__ == '__main__':
     app.run(debug = True)

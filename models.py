@@ -35,8 +35,11 @@ class ParkingLot(db.Model):
 
 class ParkingSpot(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    location = db.Column(db.String(120), nullable=False)
-    status = db.Column(db.String(120), nullable=False)
+    name = db.Column(db.String(120), nullable=False)
+    vehical_no = db.column(db.interger,nullable = False)
+    date = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    estimate_parking_cost = db.column(db.integer,nullable = True)
+    parking_spot_no = db.column(db.interger,nullable = False)
     parking_lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.id', ondelete='CASCADE'), nullable=False) 
     #ondelete='CASCADE' = if we delete parents then child will be deleted
 
