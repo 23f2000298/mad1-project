@@ -35,12 +35,13 @@ class ParkingLot(db.Model):
 
 class ParkingSpot(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(120), nullable=False)
-    vehical_no = db.column(db.interger,nullable = False)
+    # name = db.Column(db.String(120), nullable=False)
+    vehicle_no = db.Column(db.String(20))
     date = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    estimate_parking_cost = db.column(db.integer,nullable = True)
-    parking_spot_no = db.column(db.interger,nullable = False)
-    parking_lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.id', ondelete='CASCADE'), nullable=False) 
+    estimate_parking_cost = db.Column(db.Integer,nullable = True)
+    parking_spot_no = db.Column(db.Integer,nullable = False)
+    parking_lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.id', ondelete='CASCADE')) 
+    # parking_lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.id', ondelete='CASCADE'), nullable=False) 
     #ondelete='CASCADE' = if we delete parents then child will be deleted
 
     parked_histories = db.relationship('ParkedHistory', backref='parking_spot', cascade='all, delete-orphan')

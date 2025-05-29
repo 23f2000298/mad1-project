@@ -4,10 +4,10 @@
     <h2 class="mb-4 text-center">Add New Parking Spot</h2>
 
     <form method="POST" enctype="multipart/form-data">
-        <div class="mb-3">
+        <!-- <div class="mb-3">
             <label>Name</label>
             <input type="text" class="form-control" name="name" required>
-        </div>
+        </div> -->
 
         <div class="mb-3">
             <label>Vehicle No.</label>
@@ -29,14 +29,15 @@
             <input type="number" class="form-control" name="parking_spot_no" required>
         </div>
 
-        <div class="mb-3">
+        <!-- <div class="mb-3">
             <label>Parking Lot</label>
-            <select class="form-select" name="parking_lot_id" required>
-                {% for parking_lot in sections %}
+            <select class="form-select" name="parking_lot_id">
+                <!-- <select class="form-select" name="parking_lot_id" required></select> -->
+                <!-- {% for parking_lot in sections %}
                     <option value="{{ parking_lot.id }}">{{ parking_lot.name }}</option>
-                {% endfor %}
+                {% endfor %} -->
             </select>
-        </div>
+        </div> -->
 
         <div class="mb-3">
             <label>PDF File</label>

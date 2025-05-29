@@ -159,9 +159,9 @@ def create_parking_spot():
     parking_lots = ParkingLot.query.all()
     if request.method == 'POST':
         #display from data
-        name = request.form['name']
+        # name = request.form['name']
         parking_lot_id = request.form['parking_lot_id']
-        vehical_no = request.form["vehical_no"]
+        vehicle_no = request.form["vehical_no"]
         parking_spot_no = request.form["parking_spot_no"]
         estimate_parking_cost = request.form["estimate_parking_cost"]
         date = request.form["date"]
@@ -175,7 +175,7 @@ def create_parking_spot():
             os.makedirs(os.path.join(app.config["UPLOAD_FOLDER"]),exist_ok = True)
             pdf_file.save(os.path.join(app.config["UPLOAD_FOLDER"],filename))
 
-        parking_spot = ParkingSpot(name = name,vehical_no = vehical_no,
+        parking_spot = ParkingSpot(vehicle_no = vehicle_no,
                                    date = date,estimate_parking_cost = estimate_parking_cost,
                                    parking_lot_id = parking_lot_id,
                                    parking_spot_no = parking_spot_no,)
@@ -186,15 +186,34 @@ def create_parking_spot():
     
     return render_template('parking_spots/create.html')
 
+@app.route('/parking_spots')
+@login_required
+def list_parking_spots():   
+    query = request.args.get('search',"")
+    # name = request.args.get('name',"")
+    vehicle_no = request.args.get('vehicle_no',"")
+    parking_lot_id = request.args.get('parking_lot_id',"")
+    parking_spots_query = ParkingSpot.query
+    if query:
+        parking_spots_query = parking_spots_query.filter(ParkingSpot.name.ilike(f"%{query}%"))
+    if vehicle_no:
+        parking_spots_query = parking_spots_query.filter(ParkingSpot.vehical_no.ilike(f"%{vehicle_no}%"))
+    if parking_lot_id:
+         parking_spots_query = parking_spots_query.filter(ParkingSpot.parking_lot_id.ilike(f"%{parking_lot_id}%"))
+    
+    parking_spots = parking_spots_query.all()
+    parking_lots = ParkingLot.query.all()
+    # vehical_no = request.args.get('vehical_no',"")
+    return render_template('parking_spots/list.html',parking_spots = parking_spots,query = query,vehical_no = vehicle_no,parking_lot_id = parking_lot_id,parking_lots=parking_lots)
 @app.route('/parking_spots/<int:parking_spot_id>/edit',methods=['GET','POST'])
 @login_required
 @admin_required
-def edit_parking_lot(parking_spot_id):
+def edit_parking_spot(parking_spot_id):
     parking_spot = ParkingLot.query.get_or_404(parking_spot_id)
     parking_lots = ParkingLot.query.all()
     if request.method == 'POST':
-        parking_spot.name = request.form['name']
-        parking_spot.vehical_no = request.form['vehical_no']
+        # parking_spot.name = request.form['name']
+        parking_spot.vehicle_no = request.form['vehicle_no']
         parking_spot.parking_lot_id = request.form['parking_lot_id']
         parking_spot.parking_spot_no = request.form['parking_spot_no']
         parking_spot.estimate_parking_cost = request.form['estimate_parking_cost']
@@ -207,7 +226,7 @@ def edit_parking_lot(parking_spot_id):
 @app.route('/parking_spots/<int:parking_spot_id>/delete',methods=['POST'])
 @login_required
 @admin_required
-def delete_parking_lot(parking_spot_id):    
+def delete_parking_spot(parking_spot_id):    
     parking_spot = ParkingSpot.query.get_or_404(parking_spot_id)
     db.session.delete(parking_spot)
     db.session.commit()

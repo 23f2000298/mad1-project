@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-center align-items-center mb-3">
+    <h1 class="text-center">Parking Spots</h1>
+    {% if current_user.admin %}
+    <a href="{{url_for('create_parking_spot')}}" class="btn btn-dark ms-3">Add Parking Spot</a>
+    {% endif %}
+</div>
+
+<!--search bar-->
+<form method="GET" class="row g-3 mb-3">
+    <div class="col-md-3">
+        <input type="text" name="search" class="form-control" placeholder="Search by name or address"
+            value="{{query}}" />
+    </div>
+    <div class="col-md-3">
+        <select name="parking_lot_id" class="form-select">
+            <option value="">Filter by Parking Lot</option>
+            {% for parking_lot in parking_lots %}
+            <option value="{{parking_lot.id}}" {% if parking_lot.id==parking_lot_id %}selected{% endif %}>
+                {{parking_lot.name}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-3">
+        <select name=" vehical_no" class="form-select">
+            <option value="">Filter by Section</option>
+            {% for vehical_no in vehical_nos %}
+            <option value="{{ vehical_no}}" {% if vehical_no==vehical_no %}selected{% endif %}>{{ vehical_no}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-1 d-grid">
+        <button type="submit" class="btn btn-dark">Apply</button>
+    </div>
+    <div class="col-md-1 d-grid">
+        <a href="{{url_for('list_parking_spots')}}" class="btn btn-outline-secondary">Clear</a>
+    </div>
+</form>
+
+<div class="now">
+    {% for parking_spot in parking_spots %}
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <!-- <h5 class="card-title">{{ parking_spot.name }}</h5> -->
+                <p class="card-text"><strong>Vehicle No:</strong> {{ parking_spot.vehicle_no }}</p>
+                <p class="card-text"><strong>Date:</strong> {{ parking_spot.date }}</p>
+                <p class="card-text"><strong>Estimated Parking Cost:</strong> {{ parking_spot.estimate_parking_cost }}
+                </p>
+                <p class="card-text"><strong>Parking Spot No:</strong> {{ parking_spot.parking_spot_no }}</p>
+                <p class="card-text"><strong>Parking Lot:</strong> {{ parking_spot.parking_lot.name }}</p>
+                {% if parking_lot.pdf_path %}
+                <a href="{{ url_for('uploads', filename=parking_spot.pdf_path) }}" target="_blank"
+                    class="btn btn-sm btn-outline-info me-2">View PDF</a>
+                {% endif %}
+
+                { % if current_user.admin % }
+                <a href="{{url_for('edit_parking_spot', parking_spot_id = parking_spot.id)}}"
+                    class="btn btn-sm btn-outline-secondary">Edit</a>
+                <form method="POST" action="{{url_for('delete_parking_spot', parking_spot_id = parking_spot.id)}}"
+                    style='display:inline;'>
+
+                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                        onclick="return confirm('Delete this parking spot?')">Delete</button>
+                </form>
+                { % endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% if not parking_spots %}
+    <div class="text-center text-muted">No Parking Spots Found</div>
+    {% endif %}
+</div>
+{% endblock %}
+
+
+
+
