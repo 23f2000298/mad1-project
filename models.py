@@ -39,7 +39,7 @@ class ParkingSpot(db.Model):
     vehicle_no = db.Column(db.String(20))
     date = db.Column(db.DateTime, nullable=False, default=datetime.now)
     estimate_parking_cost = db.Column(db.Integer,nullable = True)
-    parking_spot_no = db.Column(db.Integer,nullable = False)
+    
     parking_lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.id', ondelete='CASCADE')) 
     # parking_lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.id', ondelete='CASCADE'), nullable=False) 
     #ondelete='CASCADE' = if we delete parents then child will be deleted

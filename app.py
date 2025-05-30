@@ -46,6 +46,34 @@ def admin_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+@app.route("/add_initial_data")
+def add_initial_data():
+    try:
+        lot1 = ParkingLot(name="Manas", address="Barpeta", pin_code="123456")
+        lot2 = ParkingLot(name="Kaziranga", address="Kakrajhar", pin_code="234567")
+        lot3 = ParkingLot(name="Orang", address="Udalguri", pin_code="345678")
+        lot4 = ParkingLot(name="Nameri", address="Baksa", pin_code="456789")
+        db.session.add_all([lot1, lot2, lot3, lot4])
+        db.session.commit()
+
+        spots = [
+            ParkingSpot(vehicle_no="AS123", parking_lot_id=lot1.id),
+            ParkingSpot(vehicle_no="BR456", parking_lot_id=lot1.id),
+            ParkingSpot(vehicle_no="CH789", parking_lot_id=lot2.id),
+            ParkingSpot(vehicle_no="DL321", parking_lot_id=lot2.id),
+            ParkingSpot(vehicle_no="MH987", parking_lot_id=lot3.id),
+            ParkingSpot(vehicle_no="TN654", parking_lot_id=lot3.id),
+            ParkingSpot(vehicle_no="UP432", parking_lot_id=lot4.id),
+            ParkingSpot(vehicle_no="WB876", parking_lot_id=lot4.id),
+            # Add more as needed
+        ]
+        db.session.add_all(spots)
+        db.session.commit()
+        return "Data inserted successfully"
+    except Exception as e:
+        return f"Error: {e}"
+
+
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -141,16 +169,26 @@ def edit_parking_lot(parking_lot_id):
         return redirect(url_for('list_parking_lots'))
     return render_template('parking_lots/edit.html',parking_lot=parking_lot)
 
-@app.route('/parking_lots/<int:parking_lot_id>/delete',methods=['POST'])
+# @app.route('/parking_lots/<int:parking_lot_id>/delete',methods=['POST'])
+# @login_required
+# @admin_required
+# def delete_parking_lot(parking_lots):    
+#     parking_lot = ParkingLot.query.get_or_404(parking_lots)
+#     db.session.delete(parking_lot)
+#     db.session.commit()
+#     flash("Parking lot deleted successfully","success")
+#     return redirect(url_for('list_parking_lots'))
+
+@app.route('/parking_lots/<int:parking_lot_id>/delete', methods=['POST'])
 @login_required
 @admin_required
 def delete_parking_lot(parking_lot_id):    
     parking_lot = ParkingLot.query.get_or_404(parking_lot_id)
     db.session.delete(parking_lot)
     db.session.commit()
-    flash("Parking lot deleted successfully","success")
+    flash("Parking lot deleted successfully", "success")
     return redirect(url_for('list_parking_lots'))
-      
+
 #######################crud on parking spots#####################
 @app.route("/parking_spots/create",methods=['GET','POST'])
 @login_required
@@ -160,7 +198,7 @@ def create_parking_spot():
     if request.method == 'POST':
         #display from data
         # name = request.form['name']
-        parking_lot_id = request.form['parking_lot_id']
+        parking_spots = request.form['parking_spots']
         vehicle_no = request.form["vehical_no"]
         parking_spot_no = request.form["parking_spot_no"]
         estimate_parking_cost = request.form["estimate_parking_cost"]
@@ -177,7 +215,7 @@ def create_parking_spot():
 
         parking_spot = ParkingSpot(vehicle_no = vehicle_no,
                                    date = date,estimate_parking_cost = estimate_parking_cost,
-                                   parking_lot_id = parking_lot_id,
+                                   parking_spots = parking_spots,
                                    parking_spot_no = parking_spot_no,)
         db.session.add(parking_spot)
         db.session.commit()
@@ -192,19 +230,19 @@ def list_parking_spots():
     query = request.args.get('search',"")
     # name = request.args.get('name',"")
     vehicle_no = request.args.get('vehicle_no',"")
-    parking_lot_id = request.args.get('parking_lot_id',"")
+    parking_spots = request.args.get('parking_spots',"")
     parking_spots_query = ParkingSpot.query
     if query:
         parking_spots_query = parking_spots_query.filter(ParkingSpot.name.ilike(f"%{query}%"))
     if vehicle_no:
         parking_spots_query = parking_spots_query.filter(ParkingSpot.vehical_no.ilike(f"%{vehicle_no}%"))
-    if parking_lot_id:
-         parking_spots_query = parking_spots_query.filter(ParkingSpot.parking_lot_id.ilike(f"%{parking_lot_id}%"))
+    if parking_spots:
+         parking_spots_query = parking_spots_query.filter(ParkingSpot.parking_spots.ilike(f"%{parking_spots}%"))
     
     parking_spots = parking_spots_query.all()
     parking_lots = ParkingLot.query.all()
     # vehical_no = request.args.get('vehical_no',"")
-    return render_template('parking_spots/list.html',parking_spots = parking_spots,query = query,vehical_no = vehicle_no,parking_lot_id = parking_lot_id,parking_lots=parking_lots)
+    return render_template('parking_spots/list.html',parking_spots = parking_spots,query = query,vehical_no = vehicle_no,parking_lots=parking_lots)
 @app.route('/parking_spots/<int:parking_spot_id>/edit',methods=['GET','POST'])
 @login_required
 @admin_required
@@ -214,7 +252,7 @@ def edit_parking_spot(parking_spot_id):
     if request.method == 'POST':
         # parking_spot.name = request.form['name']
         parking_spot.vehicle_no = request.form['vehicle_no']
-        parking_spot.parking_lot_id = request.form['parking_lot_id']
+        parking_spot.parking_spots = request.form['parking_spots']
         parking_spot.parking_spot_no = request.form['parking_spot_no']
         parking_spot.estimate_parking_cost = request.form['estimate_parking_cost']
         parking_spot.date = request.form['date']
