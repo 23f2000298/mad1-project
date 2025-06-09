@@ -243,6 +243,12 @@ def list_parking_spots():
     parking_lots = ParkingLot.query.all()
     # vehical_no = request.args.get('vehical_no',"")
     return render_template('parking_spots/list.html',parking_spots = parking_spots,query = query,vehical_no = vehicle_no,parking_lots=parking_lots)
+
+# @app.route('/uploads/<path:filename>')
+# @login_required
+# def uploads(filename):
+#     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
 @app.route('/parking_spots/<int:parking_spot_id>/edit',methods=['GET','POST'])
 @login_required
 @admin_required
