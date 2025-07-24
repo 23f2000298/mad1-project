@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>user dashboard</title>
+    <link rel = "stylesheet" href = "/static/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+    
+    <div id = "main">
+        <div id = "canvas"  class = "overflow-auto">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Welcome User</a>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/user_dashboard">Home</a>
+                </li>
+
+                <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/">Log Out</a>
+                </li>
+            </ul>
+        </div>
+        </div>
+        </nav>
+         <div class="text-center mt-4">
+                    <h4>Your Parking Spot Usage</h4>
+                    <img src = "{{ url_for('static',filename = 'user_usage_summary.png')}}" alt = "User Usage Bar Graph" class = "img-fluid mt-3">
+                </div>
+
+
+        </div>
+    </div>
+</div>  
+</body>
+</html>
+                    
+                    
+       
+        
+
+       
+
+

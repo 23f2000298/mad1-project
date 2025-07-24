@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin dashboard</title>
+    <link rel = "stylesheet" href = "/static/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <style>
+        .card{
+            width:200px
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div id = "main">
+        <div id = "canvas" class = "overflow-auto">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Welcome {{this_user.username}}</a>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/admin_summary">Summary</a> 
+                </li>
+                <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/">Log Out</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/users">Users</a>
+                </li>
+                
+
+
+            </ul>
+            
+            <form class="d-flex" action = "/search">
+                <input class="form-control me-2 " type="search" placeholder="Search" aria-label="Search" name="search">
+                <select class="form-select" aria-label="Default select example" name="key">
+                    <option selected>Search by</option>
+                    <option value="name">Name</option>
+                    <option value="pincode">Pincode</option>
+                </select>
+                <input class="btn btn-outline-success" type="submit" value = "Search">
+            </form>
+                    
+           
+            
+
+            </div>
+          </div>
+        </nav>
+        <div id = "content">
+            <h3 class = "headings">Parking Lots</h3>
+            <div class="table-container">
+                <table class="table table-bordered">
+                <thead>
+                    <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Availabe Spots</th>
+                    <th scope="col" class = "text-center"> Delete | Edit | View</th>
+                   
+                   
+                    
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lot in lot_info %}
+                    <tr>
+                    <th scope="row">{{lot.id}}</th>
+                    <td>{{lot.name}}</td>
+                    <td>{{lot.address}}</td>
+                    <td>{{lot.available}}/{{lot.total}}</td>
+                    <td class = "text-center">
+                        <a href = "/delete_parkinglot/{{lot.id}}" class = "btn btn-danger">Delete</a>
+                        <a href = "/edit_parkinglot/{{lot.id}}" class = "btn btn-primary">Edit</a>
+                        <a href = "/view_lot/{{lot.id}}" class = "btn btn-success">View</a>
+                    </td>
+                    </tr>
+                    {% endfor %}
+                 
+                </tbody>
+                </table>
+                            
+            </div>
+                <div class = "text-center">
+                     <a href = "/add_parkinglot" class = "btn btn-primary ">+Add Parking Lot</a>
+                </div>
+             </div>
+           </div>
+         </div>
+     </body>
+     </html>
+            
+                
+                
+                
+        
+        
+                
+                
+          
+     
+
+       
+
+

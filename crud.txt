@@ -1,0 +1,25 @@
+
+# crete database
+python 
+>>> from app import *
+>>> db.create_all()
+
+#create
+>>> user1 = User(username = "admin123",email = "admin@123",password ="123",type = "admin")
+>>> db.session.add(user1)
+>>> db.session.commit()
+
+#delete
+u1 = User.query.get(1)
+db.session.delete(u1)
+db.session.commit
+
+#read
+>>> users = User.query.all()
+>>> users
+[<User 1>, <User 2>]
+>>> users[0]
+<User 1>
+>>> u1 = users[0]
+>>> u1.username
+'admin123'
