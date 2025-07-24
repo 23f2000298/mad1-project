@@ -41,7 +41,7 @@ def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not current_user.admin:
-            flash("You must be Admin to access this page","error")
+            flash("You must be andmin to access this page","error")
             return redirect(url_for('home'))
         return f(*args, **kwargs)
     return decorated_function
