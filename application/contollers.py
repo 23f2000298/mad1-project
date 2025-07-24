@@ -56,7 +56,7 @@ def register():
         user_name = User.query.filter_by(username = username).first()
         user_email = User.query.filter_by(email = email).first()
         if user_name or user_email:
-           return "user already exist"
+           return "<h1>user already exist</h1>"
         else:
             user = User(username = username,email = email,password = password)
             db.session.add(user)
@@ -86,7 +86,7 @@ def create_parkinglot():
 
         existing_parkinglot = ParkingLot.query.filter_by(name = name).first()
         if existing_parkinglot:
-            return "parkinglot already exist"
+            return "<h>parkinglot already exist</h>"
         parkinglot = ParkingLot(name = name,address = address,pincode = pincode,price_per_hour = price_per_hour,maximum_spot = maximum_spot,user_id = this_user.id)
         db.session.add(parkinglot)
         db.session.commit()
@@ -112,7 +112,7 @@ def create_parkinglot():
 def delete_parkinglot(parkinglot_id):
     this_parkinglot = ParkingLot.query.get(parkinglot_id)
     if not this_parkinglot:
-        return "parkinglot not found",404
+        return "<h1>parkinglot not found</h1>",404
     bookings = Booking.query.filter_by(lot_id=this_parkinglot.id,available = False).all()
     if bookings:
         return "<h1>cannot delete this parkinglot because it has bookings</h1>"
@@ -182,7 +182,7 @@ def view_parkinglot(parkinglot_id):
 def delete_spot(parkinglot_id,spot_id):
     booking = Booking.query.filter_by(lot_id = parkinglot_id,spot_id = spot_id).first()
     if booking:
-        return "cannot delete this spot because it has booking"
+        return "<h1>cannot delete this spot because it has booking</h1>"
     spot = Booking.query.filter_by(id = spot_id).first()
     db.session.delete(spot)
     db.session.commit()
@@ -210,7 +210,7 @@ def book(parkinglot_id,user_id):
 
         if existing_booking:
             
-                return "vehicle_already_booked.html"
+                return "<h1>vehicle already booked</h1>"
            
         booking = Booking(vehicle_no = vehicle_no,spot_id = spot_id,lot_id = lot_id,user_id = user_id,parking_time = datetime.now(),available = False)
         # booking = Booking(vehicle_no = vehicle_no,spot_id = spot_id,lot_id = lot_id,user_id = user_id)
@@ -250,7 +250,7 @@ def search():
     search_word = request.args.get("search")
     key = request.args.get("key")
     if not search_word or not key:
-        return "Please provide search word and key"
+        return "<h1>Please provide search word and key</h1>"
     if key == "name":
         results = ParkingLot.query.filter(ParkingLot.name.ilike(f"%{search_word}%")).all()
    
@@ -285,7 +285,7 @@ def search_user():
     search_word = request.args.get("search")
     key = request.args.get("key")
     if not search_word or not key:
-        return "Please provide search word and key"
+        return "<h1>Please provide search word and key</h1>"
     if key == "name":
         results = ParkingLot.query.filter(ParkingLot.name.ilike(f"%{search_word}%")).all()
    
@@ -331,7 +331,7 @@ def release(booking_id):
     booking = Booking.query.get(booking_id)
    
     if not booking:
-        return "Booking not found"
+        return "<h1>Booking not found</h1>",404
     ist = pytz.timezone('Asia/Kolkata')
     current_time = datetime.now(ist)
     parking_time = booking.parking_time
@@ -351,7 +351,7 @@ def release(booking_id):
        
         booking.release_time = current_time
         booking.total_cost = cost
-        booking.available = True #new
+        booking.available = True 
         db.session.commit()
         print("Booking released for spot:", booking.spot_id)
         print("Available status now:", booking.available)
