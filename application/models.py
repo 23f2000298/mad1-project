@@ -21,10 +21,9 @@ class Booking(db.Model):
     parking_time = db.Column(db.DateTime,default = datetime.utcnow)
     release_time = db.Column(db.DateTime,nullable = True)
     total_cost = db.Column(db.Float,nullable = True)
+    available = db.Column(db.Boolean,default = True) 
 
-    available = db.Column(db.Boolean,default = True) #new
-    # parking_lot = db.relationship("ParkingLot",backref = "bookings")
-
+    
 class ParkingLot(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True, nullable=False)
