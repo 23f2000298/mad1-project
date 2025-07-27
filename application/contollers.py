@@ -40,7 +40,7 @@ def login():
             else:
                 return "Password is wrong"
         else:
-            return "user does not Exist"
+            return "<h1>user does not Exist</h>"
         
     return render_template("login.html")
 
@@ -62,6 +62,7 @@ def register():
             db.session.add(user)
             
             db.session.commit()
+            
             return redirect("/")
     return render_template("register.html")
 
@@ -115,7 +116,8 @@ def delete_parkinglot(parkinglot_id):
         return "<h1>parkinglot not found</h1>",404
     bookings = Booking.query.filter_by(lot_id=this_parkinglot.id,available = False).all()
     if bookings:
-        return "<h1>cannot delete this parkinglot because it has bookings</h1>"
+        return """<h1>cannot delete this parkinglot because it has bookings</h1>
+                <a href="/admin_dashboard">back</a>"""
     ParkingLot.query.filter_by(id = parkinglot_id).delete()
     db.session.delete(this_parkinglot)
     db.session.commit()
@@ -178,27 +180,76 @@ def view_parkinglot(parkinglot_id):
     return render_template("view_lot.html",this_parkinglot = this_parkinglot,booked_spots_ids = booked_spots_ids,bookings_by_spot = booking_by_spot)
 
 
-@app.route("/delete_spot/<int:parkinglot_id>/<int:spot_id>",methods = ["GET","POST"])
-def delete_spot(parkinglot_id,spot_id):
-    booking = Booking.query.filter_by(lot_id = parkinglot_id,spot_id = spot_id).first()
-    if booking:
-        return "<h1>cannot delete this spot because it has booking</h1>"
-    spot = Booking.query.filter_by(id = spot_id).first()
-    db.session.delete(spot)
-    db.session.commit()
-    return f"Spot {spot_id} deleted successfully"
+# @app.route("/delete_spot/<int:parkinglot_id>/<int:spot_id>",methods = ["GET","POST"])
+# def delete_spot(parkinglot_id,spot_id):
+#     booking = Booking.query.filter_by(lot_id = parkinglot_id,spot_id = spot_id).first()
+#     if booking:
+#         return "<h1>cannot delete this spot because it has booking</h1>"
+#     spot = Booking.query.filter_by(id = spot_id).first()
+#     db.session.delete(spot)
+#     db.session.commit()
+#     return f"Spot {spot_id} deleted successfully"
 
+
+# @app.route("/book/<int:parkinglot_id>/<int:user_id>",methods = ["GET","POST"])
+# def book(parkinglot_id,user_id):
+#     this_parkinglot = ParkingLot.query.filter_by(id = parkinglot_id).first()
+#     this_user = User.query.filter_by(id = user_id).first()
+#     spots = Booking.query.filter_by(lot_id = this_parkinglot.id).all()
+#     if request.method == "GET":
+#         existing_spots = Booking.query.filter_by(lot_id = this_parkinglot.id).count()
+#         next_spot_id = existing_spots + 1
+#         if next_spot_id > this_parkinglot.maximum_spot:
+#             return render_template("sorry all full")
+#         return render_template("book.html",this_parkinglot = this_parkinglot,this_user = this_user,next_spot_id = next_spot_id)
+#     else:
+#         vehicle_no = request.form["vehicle_no"]
+#         spot_id = int(request.form["spot_id"])
+#         lot_id = int(request.form["lot_id"])
+#         user_id = int(request.form["user_id"])
+
+#         existing_booking = Booking.query.filter_by(vehicle_no = vehicle_no,available = False).first()
+
+#         if existing_booking:
+            
+#                 return "<h1>vehicle already booked</h1>"
+           
+#         booking = Booking(vehicle_no = vehicle_no,spot_id = spot_id,lot_id = lot_id,user_id = user_id,parking_time = datetime.now(),available = False)
+       
+#         db.session.add(booking)
+#         db.session.commit()
+#         spots = Booking.query.filter_by(user_id = this_user.id).all()
+#         parkinglots = ParkingLot.query.all()
+#         lot_info = []
+#         for lot in parkinglots:
+#             total_spots = lot.maximum_spot
+#             booked_spots = Booking.query.filter_by(lot_id = lot.id).count()
+#             available_spots = total_spots - booked_spots
+#             lot_info.append({
+#                 "id":lot.id,
+#                 "name":lot.name,
+#                 "address":lot.address,
+#                 "available":available_spots,
+#                 "total":total_spots
+#             })
+#         history = Booking.query.filter(Booking.user_id == this_user.id,Booking.release_time != None).all()  #new
+#         return render_template("user_dashboard.html",this_user = this_user,spots = spots,lot_info = lot_info)
 
 @app.route("/book/<int:parkinglot_id>/<int:user_id>",methods = ["GET","POST"])
 def book(parkinglot_id,user_id):
     this_parkinglot = ParkingLot.query.filter_by(id = parkinglot_id).first()
     this_user = User.query.filter_by(id = user_id).first()
-    spots = Booking.query.filter_by(lot_id = this_parkinglot.id).all()
+   
     if request.method == "GET":
-        existing_spots = Booking.query.filter_by(lot_id = this_parkinglot.id).count()
-        next_spot_id = existing_spots + 1
-        if next_spot_id > this_parkinglot.maximum_spot:
+        active_bookings = Booking.query.filter_by(lot_id = parkinglot_id,available=False).all()
+        occupied_spot = {b.spot_id:b for b in active_bookings}
+        for  sid in range(1,this_parkinglot.maximum_spot+1):
+            if sid not in occupied_spot:
+                next_spot_id = sid
+                break
+        else:
             return render_template("sorry all full")
+        
         return render_template("book.html",this_parkinglot = this_parkinglot,this_user = this_user,next_spot_id = next_spot_id)
     else:
         vehicle_no = request.form["vehicle_no"]
@@ -206,14 +257,14 @@ def book(parkinglot_id,user_id):
         lot_id = int(request.form["lot_id"])
         user_id = int(request.form["user_id"])
 
-        existing_booking = Booking.query.filter_by(vehicle_no = vehicle_no,available = False).first()
+        existing_booking = Booking.query.filter_by(lot_id = lot_id,available = False,spot_id = spot_id).first()
 
         if existing_booking:
             
                 return "<h1>vehicle already booked</h1>"
-           
+
         booking = Booking(vehicle_no = vehicle_no,spot_id = spot_id,lot_id = lot_id,user_id = user_id,parking_time = datetime.now(),available = False)
-        # booking = Booking(vehicle_no = vehicle_no,spot_id = spot_id,lot_id = lot_id,user_id = user_id)
+       
         db.session.add(booking)
         db.session.commit()
         spots = Booking.query.filter_by(user_id = this_user.id).all()
@@ -221,7 +272,7 @@ def book(parkinglot_id,user_id):
         lot_info = []
         for lot in parkinglots:
             total_spots = lot.maximum_spot
-            booked_spots = Booking.query.filter_by(lot_id = lot.id).count()
+            booked_spots = Booking.query.filter_by(lot_id = lot.id,available = False).count()
             available_spots = total_spots - booked_spots
             lot_info.append({
                 "id":lot.id,
@@ -259,6 +310,27 @@ def search():
     return render_template("result.html",results = results,key = key)
 
 
+# @app.route("/admin_dashboard")
+# def admin_dashboard():
+#     this_user = User.query.filter_by(type = "admin").first()
+
+#     parkinglots = ParkingLot.query.all() 
+
+#     lot_info = []
+#     for lot in parkinglots:
+#         total_spots = lot.maximum_spot
+        
+#         booked_spots = Booking.query.filter_by(lot_id = lot.id,release_time = None).count()  
+#         available_spots = total_spots - booked_spots
+#         lot_info.append({
+#             "id":lot.id,
+#             "name":lot.name,
+#             "address":lot.address,
+#             "available":available_spots,
+#             "total":total_spots
+#         })
+#     return render_template("admin_dashboard.html",this_user = this_user,lot_info = lot_info)
+
 @app.route("/admin_dashboard")
 def admin_dashboard():
     this_user = User.query.filter_by(type = "admin").first()
@@ -269,7 +341,7 @@ def admin_dashboard():
     for lot in parkinglots:
         total_spots = lot.maximum_spot
         
-        booked_spots = Booking.query.filter_by(lot_id = lot.id,release_time = None).count()  
+        booked_spots = Booking.query.filter(Booking.lot_id == lot.id,Booking.release_time == None,Booking.available == False).count()  
         available_spots = total_spots - booked_spots
         lot_info.append({
             "id":lot.id,
@@ -279,6 +351,7 @@ def admin_dashboard():
             "total":total_spots
         })
     return render_template("admin_dashboard.html",this_user = this_user,lot_info = lot_info)
+
 
 @app.route("/user_search")
 def search_user():
