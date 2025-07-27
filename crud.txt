@@ -5,7 +5,7 @@ python
 >>> db.create_all()
 
 #create
->>> user1 = User(username = "admin123",email = "admin@123",password ="123",type = "admin")
+>>> user1 = User(username = "admin123",email = "admin@123",password ="1",type = "admin")
 >>> db.session.add(user1)
 >>> db.session.commit()
 
@@ -23,3 +23,9 @@ db.session.commit
 >>> u1 = users[0]
 >>> u1.username
 'admin123'
+
+#how to run app
+1.Go to terminal
+2.Click new terminal>>below terminal will open
+3.type =>> "Python app.py" and click Enter in keyboard
+4.Follow link appeared  like this "* Running on http://127.0.0.1:5000" or paste the link in browser
