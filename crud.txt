@@ -29,3 +29,10 @@ db.session.commit
 2.Click new terminal>>below terminal will open
 3.type =>> "Python app.py" and click Enter in keyboard
 4.Follow link appeared  like this "* Running on http://127.0.0.1:5000" or paste the link in browser
+
+#How to push
+1.git add .
+2.git commit -m "message"
+3.git push origin main
+
+Check status =>> git status
